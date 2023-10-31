@@ -1,0 +1,3 @@
+.no-transition .progress-bar {
+  transition: none !important;
+}

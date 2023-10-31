@@ -5,6 +5,10 @@ class Api {
     return await this.get('/speakers');
   }
 
+  static async postInitializeSpeaker(style_id, skip_reinit = false) {
+    return await this.post('/initialize_speaker?speaker='+style_id+'&skip_reinit='+(skip_reinit ? '1' : '0'));
+  }
+
   static async postAudioQuery(text, style_id) {
     return await this.post('/audio_query?text='+text+'&speaker='+style_id);
   }

@@ -2,23 +2,36 @@ window.SPEAKERS = null;
 window.DEFAULT_SPEAKER_NAME = 'ずんだもん';
 window.DEFAULT_SPEAKER_STYLE = 'ノーマル';
 
+window.FFT_SIZE = 2048;
+window.MIC = null;
+
 window.addEventListener('load', async function(){
   window.SPEAKERS = await Api.getSpeakers();
   init_speakers();
   set_default_speaker();
 
-  $('#read_text').on('click', read_text)
+  $('#read_text').on('click', read_text);
+  $('#mic_start').on('click', mic_start);
+  $('#speaker').on('change', init_styles);
+  $('#style').on('change', on_change_style);
 });
 
-async function read_text() {
-  const context = new AudioContext();
-
-  const text = $('#text').val();
+function on_change_style() {
   const style_id = $('#style').val();
+  Api.postInitializeSpeaker(style_id, true);
+}
 
-  const audio_quqry = await Api.postAudioQuery(text, style_id);
-  const audio = await Api.postSynthesis(style_id, audio_quqry, context);
-  Utl.play_audio_buffer(audio, context);
+async function mic_start() {
+  if (!window.MIC) {
+    window.MIC = new Mic();
+  }
+  await window.MIC.init();
+  window.MIC.start();
+}
+
+async function read_text() {
+  const text = $('#text').val();
+  Utl.play_text(text);
 }
 
 function set_default_speaker() {
@@ -44,7 +57,6 @@ function set_default_speaker() {
 
 async function init_speakers()
 {
-  $('#speaker').on('change', init_styles);
   for (let idx in window.SPEAKERS) {
     const sp = window.SPEAKERS[idx];
     const option = $('<option>').attr('value', sp.speaker_uuid).html(sp.name);
@@ -75,4 +87,5 @@ function init_styles() {
     option.html(style.name);
     $('#style').append(option);
   }
+  on_change_style();
 }
