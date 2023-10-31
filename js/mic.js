@@ -41,7 +41,7 @@ class Mic {
   }
 
   choice_text = function() {
-    return window.VOICES[Utl.rand_int(0, window.VOICES.length - 1)];
+    return window.VOICES[Utl.rand_int(0, window.VOICES.length - 1)]+'について話してほしいのだ';
   }
 
   check_volume = function() {
